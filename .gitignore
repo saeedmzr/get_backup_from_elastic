@@ -1,0 +1,4 @@
+.env
+elasticsearch_data/
+elasticsearch_snapshots/
+venv/

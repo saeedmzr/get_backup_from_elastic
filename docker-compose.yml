@@ -1,0 +1,44 @@
+version: "3.9"
+
+networks:
+  elk-net:
+    driver: bridge
+
+services:
+#  elastic_runner:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    depends_on:
+#      - elasticsearch
+#    networks:
+#      - elk-net
+
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+    environment:
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"  # Disable security (for development)
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./elasticsearch_data:/usr/share/elasticsearch/data
+      - ./elasticsearch_snapshots:/usr/share/elasticsearch/snapshots
+      - ./elasticsearch:/usr/share/elasticsearch/config
+
+    networks:
+      - elk-net
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.15.0
+    environment:
+      - "ELASTICSEARCH_HOSTS=http://elasticsearch:9200"  # Point Kibana to your Elasticsearch container
+      - "xpack.security.enabled=false"  # Disable security (for development)
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk-net

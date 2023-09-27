@@ -1,0 +1,4 @@
+elasticsearch
+python-dotenv
+py7zr
+minio
